@@ -23,6 +23,10 @@ async function writeProducts(products) {
 }
 
 // GET all products
+app.get('/', (req, res) => {
+  res.send('This server is running on an Android mobile.');
+});
+
 app.get('/products', async (req, res) => {
   const products = await readProducts();
   res.json(products);

@@ -75,7 +75,7 @@ app.delete('/products/:id', async (req, res) => {
 });
 
 // EMPLOYEE CRUD
-const EMPLOYEE_FILE = path.join(__dirname, 'employees.json');
+const EMPLOYEE_FILE = path.join(__dirname, 'employees_20000.json');
 
 // Utility to read employees
 async function readEmployees() {
@@ -90,11 +90,32 @@ async function writeEmployees(employees) {
 }
 
 // GET all employees
-app.get('/employees', async (req, res) => {
-  const employees = await readEmployees();
-  res.json(employees);
-});
 
+app.get('/employees', async (req, res) => {
+  try {
+    const employees = await readEmployees();
+
+    // Get query parameters with defaults
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const paginatedEmployees = employees.slice(startIndex, endIndex);
+
+    res.json({
+      currentPage: page,
+      limit: limit,
+      totalEmployees: employees.length,
+      totalPages: Math.ceil(employees.length / limit),
+      data: paginatedEmployees
+    });
+  } catch (error) {
+    console.error('Error fetching employees:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 // GET employee by ID
 app.get('/employees/:id', async (req, res) => {
   const employees = await readEmployees();

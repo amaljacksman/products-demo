@@ -119,7 +119,7 @@ app.get('/employees', async (req, res) => {
 // GET employee by ID
 app.get('/employees/:id', async (req, res) => {
   const employees = await readEmployees();
-  const employee = employees.find(e => e.id === req.params.id);
+  const employee = employees.find(e => e.id == req.params.id);
   if (employee) res.json(employee);
   else res.status(404).json({ message: 'Employee not found' });
 });
@@ -141,8 +141,8 @@ app.post('/employees', async (req, res) => {
 // PUT update employee
 app.put('/employees/:id', async (req, res) => {
   const employees = await readEmployees();
-  const index = employees.findIndex(e => e.id === req.params.id);
-  if (index === -1) return res.status(404).json({ message: 'Employee not found' });
+  const index = employees.findIndex(e => e.id == req.params.id);
+  if (index == -1) return res.status(404).json({ message: 'Employee not found' });
 
   employees[index] = { ...employees[index], ...req.body };
   await writeEmployees(employees);
@@ -152,7 +152,7 @@ app.put('/employees/:id', async (req, res) => {
 // DELETE employee
 app.delete('/employees/:id', async (req, res) => {
   const employees = await readEmployees();
-  const updated = employees.filter(e => e.id !== req.params.id);
+  const updated = employees.filter(e => e.id != req.params.id);
   if (updated.length === employees.length) return res.status(404).json({ message: 'Employee not found' });
 
   await writeEmployees(updated);
